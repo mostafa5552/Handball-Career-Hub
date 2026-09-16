@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a1929">
+    <title>HANDBALL CAREER HUB</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app">
+
+        <section id="screen-main" class="screen active">
+            <div class="logo">
+                <h1>HANDBALL</h1>
+                <h2>CAREER HUB</h2>
+                <p class="subtitle">لعبة مهنة لاعب ومدرب كرة اليد</p>
+            </div>
+            <div class="menu-buttons">
+                <button class="btn-primary" onclick="goToSavedCareers()">📂 دخول مهنة محفوظة</button>
+                <button class="btn-primary" onclick="goToNewCareer()">➕ مهنة جديدة</button>
+            </div>
+        </section>
+
+        <section id="screen-saved" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" onclick="showScreen('screen-main')">← رجوع</button>
+                <h2>المهن المحفوظة</h2>
+            </header>
+            <div id="saved-careers-list" class="careers-list"></div>
+        </section>
+
+        <section id="screen-new" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" onclick="showScreen('screen-main')">← رجوع</button>
+                <h2>اختر نوع المهنة</h2>
+            </header>
+            <div class="menu-buttons">
+                <button class="btn-primary" onclick="goToPlayerCreation()">🏃 مهنة لاعب</button>
+                <button class="btn-primary" onclick="goToCoachCreation()">📋 مهنة مدرب</button>
+            </div>
+        </section>
+
+        <section id="screen-player-create" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" onclick="showScreen('screen-new')">← رجوع</button>
+                <h2>إنشاء لاعب جديد</h2>
+            </header>
+            <form id="player-form" class="form">
+                <label>اسم اللاعب</label>
+                <input type="text" id="player-name" required placeholder="مثال: محمد أحمد">
+                <label>الجنسية</label>
+                <select id="player-nationality" required>
+                    <option value="">اختر الجنسية</option>
+                </select>
+                <label>المركز</label>
+                <select id="player-position" required>
+                    <option value="">اختر المركز</option>
+                    <option value="مهاجم">مهاجم (ظهير)</option>
+                    <option value="جناح">جناح</option>
+                    <option value="لاعب دائرة">لاعب دائرة (بيفوت)</option>
+                    <option value="حارس مرمى">حارس مرمى</option>
+                </select>
+                <button type="submit" class="btn-primary">التالي ←</button>
+            </form>
+        </section>
+
+        <section id="screen-coach-create" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" onclick="showScreen('screen-new')">← رجوع</button>
+                <h2>إنشاء مدرب جديد</h2>
+            </header>
+            <form id="coach-form" class="form">
+                <label>اسم المدرب</label>
+                <input type="text" id="coach-name" required placeholder="مثال: كابتن أحمد">
+                <label>الجنسية</label>
+                <select id="coach-nationality" required>
+                    <option value="">اختر الجنسية</option>
+                </select>
+                <label>الدوري</label>
+                <select id="coach-league" required>
+                    <option value="">اختر الدوري</option>
+                </select>
+                <label>النادي</label>
+                <select id="coach-club" required>
+                    <option value="">اختر النادي أولاً</option>
+                </select>
+                <button type="submit" class="btn-primary">ابدأ المسيرة ←</button>
+            </form>
+        </section>
+
+        <section id="screen-league-select" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" onclick="showScreen('screen-player-create')">← رجوع</button>
+                <h2>اختر الدوري</h2>
+            </header>
+            <div id="leagues-list" class="list-container"></div>
+        </section>
+
+        <section id="screen-club-select" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" onclick="goToLeagueSelect()">← رجوع</button>
+                <h2>اختر النادي</h2>
+            </header>
+            <div id="clubs-list" class="list-container"></div>
+        </section>
+
+        <section id="screen-career" class="screen">
+            <div class="career-topbar">
+                <span id="career-date">—</span>
+                <div class="career-actions">
+                    <button class="btn-small" onclick="goToDevelopment()">📈 تطوير</button>
+                    <button class="btn-small" onclick="saveAndExit()">💾 حفظ</button>
+                </div>
+            </div>
+            <div class="career-card"><div id="career-player-info"></div></div>
+            <div class="career-stats-row">
+                <div class="stat-box">
+                    <div class="stat-label">القوة الكلية</div>
+                    <div class="stat-number" id="career-rating">60</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">النقاط</div>
+                    <div class="stat-number" id="career-points">0</div>
+                </div>
+            </div>
+            <button id="career-action-btn" class="btn-primary" onclick="handleCareerAction()">⏭️ تخطي اليوم</button>
+
+            <div class="career-competitions-row">
+                <button class="btn-competition" onclick="goToLeagueTable()">📊 جدول الدوري</button>
+                <button class="btn-competition" onclick="goToMySquad()">👥 فريقي</button>
+                <button class="btn-competition" onclick="goToCup()">🏆 الكأس</button>
+                <button class="btn-competition" onclick="goToContinental()">🌍 البطولة القارية</button>
+            </div>
+            <div class="career-more-row">
+                <button class="btn-more" onclick="goToContract()">📄 العقد</button>
+                <button class="btn-more" onclick="goToOffers()">💼 العروض</button>
+                <button class="btn-more" onclick="goToNationalTeam()">🌐 المنتخب</button>
+            </div>
+            <div class="career-more-row">
+                <button class="btn-more" onclick="goToTraining()">🏋️ تدريب</button>
+                <button class="btn-more" onclick="goToMedia()">📰 إعلام</button>
+                <button class="btn-more" onclick="goToStats()">📊 إحصائياتي</button>
+            </div>
+            <div class="career-more-row" style="grid-template-columns: 1fr 1fr;">
+                <button class="btn-more" onclick="goToAchievements()">🏅 الإنجازات</button>
+                <button class="btn-more" onclick="goToAwards()">🏆 الجوائز</button>
+            </div>
+            <button class="career-stats-btn" onclick="goToYouth()">👶 فريق الشباب</button>
+
+            <div class="section-title">آخر المباريات</div>
+            <div id="career-recent-matches"></div>
+        </section>
+
+        <section id="screen-development" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" onclick="showScreen('screen-career')">← رجوع</button>
+                <h2>التطوير الذاتي</h2>
+            </header>
+            <div class="dev-header">
+                <div class="dev-header-item">
+                    <div class="label">النقاط المتاحة</div>
+                    <div class="value" id="dev-points">0</div>
+                </div>
+                <div class="dev-header-item">
+                    <div class="label">القوة الكلية</div>
+                    <div class="value" id="dev-rating">60</div>
+                </div>
+            </div>
+            <div id="development-stats"></div>
+        </section>
+
+        <section id="screen-training" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" onclick="showScreen('screen-career')">← رجوع</button>
+                <h2>🏋️ مركز التدريب</h2>
+            </header>
+            <div id="training-body"></div>
+        </section>
+
+        <section id="screen-media" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" onclick="showScreen('screen-career')">← رجوع</button>
+                <h2>📰 الصحافة</h2>
+            </header>
+            <div id="media-body"></div>
+        </section>
+
+        <section id="screen-achievements" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" onclick="showScreen('screen-career')">← رجوع</button>
+                <h2>🏅 الإنجازات</h2>
+            </header>
+            <div id="achievements-body"></div>
+        </section>
+
+        <section id="screen-awards" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" onclick="showScreen('screen-career')">← رجوع</button>
+                <h2>🏆 الجوائز</h2>
+            </header>
+            <div id="awards-body"></div>
+        </section>
+
+        <section id="screen-youth" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" onclick="goBackToMainCareer()">← رجوع</button>
+                <h2>👶 فريق الشباب</h2>
+            </header>
+            <div id="youth-body"></div>
+        </section>
+
+        <section id="screen-stats" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" onclick="goBackFromStats()">← رجوع</button>
+                <h2>📊 الإحصائيات</h2>
+            </header>
+            <div id="stats-body"></div>
+        </section>
+
+        <section id="screen-coach" class="screen">
+            <div class="career-topbar">
+                <span id="coach-date">—</span>
+                <div class="career-actions">
+                    <button class="btn-small" onclick="goToCoachDevelopment()">📈 تطوير</button>
+                    <button class="btn-small" onclick="goToFormation()">👥 تشكيل</button>
+                    <button class="btn-small" onclick="saveAndExitCoach()">💾 حفظ</button>
+                </div>
+            </div>
+            <div class="career-card"><div id="coach-info"></div></div>
+            <div class="career-stats-row" style="grid-template-columns: 1fr 1fr 1fr;">
+                <div class="stat-box">
+                    <div class="stat-label">القوة</div>
+                    <div class="stat-number" id="coach-rating">60</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">النقاط</div>
+                    <div class="stat-number" id="coach-points">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">السجل</div>
+                    <div class="stat-number" id="coach-record" style="font-size:1rem;">0ف-0ت-0خ</div>
+                </div>
+            </div>
+            <button id="coach-action-btn" class="btn-primary" onclick="handleCoachAction()">⏭️ تخطي اليوم</button>
+            <button class="career-stats-btn" onclick="goToStats()">📊 إحصائياتي</button>
+            <button class="career-stats-btn" onclick="goToYouth()">👶 فريق الشباب</button>
+            <div class="section-title">آخر المباريات</div>
+            <div id="coach-recent-matches"></div>
+        </section>
+
+        <section id="screen-coach-development" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" onclick="showScreen('screen-coach')">← رجوع</button>
+                <h2>تطوير المدرب</h2>
+            </header>
+            <div class="dev-header">
+                <div class="dev-header-item">
+                    <div class="label">النقاط</div>
+                    <div class="value" id="coach-dev-points">0</div>
+                </div>
+                <div class="dev-header-item">
+                    <div class="label">القوة</div>
+                    <div class="value" id="coach-dev-rating">60</div>
+                </div>
+            </div>
+            <div id="coach-development-stats"></div>
+        </section>
+
+        <section id="screen-formation" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" onclick="showScreen('screen-coach')">← رجوع</button>
+                <h2>التشكيل والتكتيك</h2>
+            </header>
+            <div id="formation-body"></div>
+        </section>
+
+        <section id="screen-coach-match" class="screen">
+            <div class="match-topbar">
+                <div class="match-team">
+                    <div class="match-club-name" id="coach-match-my-club">—</div>
+                    <div class="match-score" id="coach-match-my-score">0</div>
+                </div>
+                <div class="match-center">
+                    <div class="match-time" id="coach-match-clock">00:00</div>
+                    <div class="match-vs">ضد</div>
+                </div>
+                <div class="match-team">
+                    <div class="match-club-name" id="coach-match-opp-club">—</div>
+                    <div class="match-score" id="coach-match-opp-score">0</div>
+                </div>
+            </div>
+            <div class="match-progress-bar">
+                <div class="match-progress-fill" id="coach-match-progress"></div>
+            </div>
+            <button class="btn-tactic" id="coach-match-tactic-btn" onclick="toggleCoachMatchTactic()">
+                التكتيك: متوازن
+            </button>
+            <div class="section-title">أحداث المباراة</div>
+            <div class="coach-match-events" id="coach-match-events"></div>
+            <div class="match-final-overlay" id="coach-match-final" style="display:none;">
+                <div class="match-final-card">
+                    <h2 id="coach-match-final-title">نهاية المباراة</h2>
+                    <div class="match-final-score" id="coach-match-final-score">0 - 0</div>
+                    <div class="match-final-stats" id="coach-match-final-stats"></div>
+                    <button class="btn-primary" onclick="closeCoachMatchAndReturn()">العودة</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="screen-league-table" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" onclick="goBackFromTable()">← رجوع</button>
+                <h2 id="league-table-title">جدول الدوري</h2>
+            </header>
+            <div id="league-table-position" class="league-position-badge">مركزك: —</div>
+            <div class="league-table-container">
+                <table class="league-table">
+                    <thead>
+                        <tr>
+                            <th>#</th><th>الفريق</th><th>ل</th><th>ف</th><th>ت</th><th>خ</th><th>له:عليه</th><th>نقاط</th>
+                        </tr>
+                    </thead>
+                    <tbody id="league-table-body"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="screen-cup" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" onclick="goBackToMainCareer()">← رجوع</button>
+                <h2 id="cup-title">الكأس</h2>
+            </header>
+            <div id="cup-bracket"></div>
+        </section>
+
+        <section id="screen-continental" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" onclick="goBackToMainCareer()">← رجوع</button>
+                <h2 id="continental-title">البطولة القارية</h2>
+            </header>
+            <div id="continental-body"></div>
+        </section>
+
+        <section id="screen-squad" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" onclick="goBackToMainCareer()">← رجوع</button>
+                <h2 id="squad-title">قائمة الفريق</h2>
+            </header>
+            <div id="squad-list"></div>
+        </section>
+
+        <section id="screen-contract" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" onclick="showScreen('screen-career')">← رجوع</button>
+                <h2>📄 العقد الحالي</h2>
+            </header>
+            <div id="contract-body"></div>
+        </section>
+
+        <section id="screen-offers" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" onclick="showScreen('screen-career')">← رجوع</button>
+                <h2>💼 العروض</h2>
+            </header>
+            <div id="offers-body"></div>
+        </section>
+
+        <section id="screen-national" class="screen">
+            <header class="screen-header">
+                <button class="btn-back" onclick="showScreen('screen-career')">← رجوع</button>
+                <h2>🌐 المنتخب</h2>
+            </header>
+            <div id="national-body"></div>
+        </section>
+
+        <section id="screen-match" class="screen">
+            <div class="match-topbar">
+                <div class="match-team">
+                    <div class="match-club-name" id="match-my-club">—</div>
+                    <div class="match-score" id="match-my-score">0</div>
+                </div>
+                <div class="match-center">
+                    <div class="match-time" id="match-clock">00:00</div>
+                    <div class="match-vs">ضد</div>
+                </div>
+                <div class="match-team">
+                    <div class="match-club-name" id="match-opp-club">—</div>
+                    <div class="match-score" id="match-opp-score">0</div>
+                </div>
+            </div>
+            <div class="match-progress-bar">
+                <div class="match-progress-fill" id="match-progress"></div>
+            </div>
+            <div class="match-scenario-box">
+                <div class="match-minute" id="match-minute">الدقيقة 1</div>
+                <div class="match-scenario" id="match-scenario-text">—</div>
+            </div>
+            <div class="match-choices" id="match-choices"></div>
+            <div class="match-final-overlay" id="match-final" style="display:none;">
+                <div class="match-final-card">
+                    <h2 id="match-final-title">نهاية المباراة</h2>
+                    <div class="match-final-score" id="match-final-score">0 - 0</div>
+                    <div class="match-final-stats" id="match-final-stats"></div>
+                    <button class="btn-primary" onclick="closeMatchAndReturn()">العودة للكارير</button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script src="js/database.js"></script>
+    <script src="js/names.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/extras.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/league-sim.js"></script>
+    <script src="js/match.js"></script>
+    <script src="js/competitions.js"></script>
+    <script src="js/competitions-ui.js"></script>
+    <script src="js/contracts.js"></script>
+    <script src="js/contracts-ui.js"></script>
+    <script src="js/national-team.js"></script>
+    <script src="js/coach.js"></script>
+    <script src="js/coach-match.js"></script>
+    <script src="js/stats.js"></script>
+    <script src="js/autosave.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
